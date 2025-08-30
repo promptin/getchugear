@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PrompterRent Pro Mobile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            touch-action: manipulation;
+        }
+
+        .container {
+            padding: 10px;
+            max-width: 100%;
+        }
+
+        /* Mobile-Optimized Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 20px 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .header-subtitle {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        /* Mobile Stats */
+        .mobile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            display: flex;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .nav-item {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 12px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            min-width: 70px;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Mobile Asset Cards */
+        .mobile-asset {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #48bb78;
+        }
+
+        .mobile-asset.checked-out { border-left-color: #ed8936; }
+        .mobile-asset.on-location { border-left-color: #4299e1; }
+        .mobile-asset.maintenance { border-left-color: #f56565; }
+
+        .asset-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .asset-info {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .asset-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .mobile-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .mobile-btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-success { background: linear-gradient(45deg, #48bb78, #38a169); }
+        .btn-warning { background: linear-gradient(45deg, #ed8936, #dd6b20); }
+        .btn-info { background: linear-gradient(45deg, #4299e1, #3182ce); }
+
+        /* QR Scanner Interface */
+        .qr-interface {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .qr-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            font-size: 16px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .qr-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* RFID Status */
+        .rfid-status {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .rfid-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        /* Schedule Items */
+        .schedule-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .schedule-time {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .schedule-client {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .schedule-details {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Achievement Popup */
+        .achievement {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            font-weight: bold;
+            text-align: center;
+            max-width: 90%;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .achievement.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(10px);
+        }
+
+        /* Leaderboard */
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 8px 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .leader-rank {
+            font-size: 1.5em;
+            font-weight: bold;
+            width: 40px;
+            text-align: center;
+            margin-right: 15px;
+        }
+
+        .rank-1 { color: #ffd700; }
+        .rank-2 { color: #c0c0c0; }
+        .rank-3 { color: #cd7f32; }
+
+        .leader-info {
+            flex: 1;
+        }
+
+        .leader-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .leader-stats {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            background: white;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Add Equipment Form */
+        .add-form {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Activity Feed */
+        .activity-item {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin: 8px 0;
+            border-left: 3px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: #888;
+            float: right;
+        }
+
+        .activity-text {
+            font-size: 14px;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* iOS Safe Areas */
+        .container {
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+
+        /* Hide scrollbars on mobile */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Mobile Header -->
+        <div class="header">
+            <h1>📱 PrompterRent Pro</h1>
+            <p class="header-subtitle">Mobile Asset Management</p>
+            
+            <div class="mobile-stats">
+                <div class="stat-card">
+                    <span class="stat-number" id="userXP">6,500</span>
+                    <span class="stat-label">XP • Level 12</span>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #48cae4, #023e8a);">
+                    <span class="stat-number" id="availableCount">28</span>
+                    <span class="stat-label">Available</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav">
+            <button class="nav-item active" onclick="showTab('dashboard')">📊<br>Home</button>
+            <button class="nav-item" onclick="showTab('assets')">📦<br>Assets</button>
+            <button class="nav-item" onclick="showTab('qr')">📱<br>QR Scan</button>
+            <button class="nav-item" onclick="showTab('rfid')">📡<br>RFID</button>
+            <button class="nav-item" onclick="showTab('schedule')">📅<br>Jobs</button>
+            <button class="nav-item" onclick="showTab('leaderboard')">🏆<br>Ranks</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <h2 style="margin-bottom: 15px;">🎯 Today's Missions</h2>
+            
+            <div class="schedule-item" style="background: linear-gradient(135deg, #48bb78, #38a169); color: white;">
+                <div class="schedule-time" style="color: white;">Daily Challenge</div>
+                <div class="schedule-client">Process 10 Equipment Scans</div>
+                <div class="schedule-details" style="color: rgba(255,255,255,0.9);">Progress: 7/10 • Reward: +100 XP</div>
+            </div>
+
+            <div class="schedule-item" style="background: linear-gradient(135deg, #4299e1, #3182ce); color: white;">
+                <div class="schedule-time" style="color: white;">Speed Challenge</div>
+                <div class="schedule-client">Complete Check-out in Under 2 Minutes</div>
+                <div class="schedule-details" style="color: rgba(255,255,255,0.9);">Active Now • Reward: +150 XP</div>
+            </div>
+
+            <h3 style="margin: 20px 0 15px 0;">📈 Recent Activity</h3>
+            <div id="recentActivity"></div>
+        </div>
+
+        <!-- Assets Tab -->
+        <div id="assets" class="tab-content">
+            <input type="text" class="search-bar" placeholder="🔍 Search equipment..." oninput="searchAssets(this.value)">
+            
+            <button class="mobile-btn btn-success" onclick="showAddForm()" style="width: 100%; margin-bottom: 15px;">
+                ➕ Add New Equipment
+            </button>
+
+            <div id="addForm" class="add-form" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">Equipment Name</label>
+                    <input type="text" class="form-input" id="newAssetName" placeholder="e.g., PrompterMax Pro 19">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-input" id="newAssetCategory">
+                        <option>Teleprompter</option>
+                        <option>Camera</option>
+                        <option>Audio</option>
+                        <option>Lighting</option>
+                        <option>Accessories</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Daily Rental Rate</label>
+                    <input type="number" class="form-input" id="newAssetPrice" placeholder="150">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="mobile-btn btn-success" onclick="addNewAsset()">✅ Add Equipment</button>
+                    <button class="mobile-btn" onclick="hideAddForm()">❌ Cancel</button>
+                </div>
+            </div>
+            
+            <div id="assetList"></div>
+        </div>
+
+        <!-- QR Scanner Tab -->
+        <div id="qr" class="tab-content">
+            <div class="qr-interface">
+                <h2>📱 QR Code Scanner</h2>
+                <p style="margin: 10px 0; color: #666;">Scan or enter QR code to check equipment in/out</p>
+                
+                <input type="text" class="qr-input" id="qrInput" placeholder="📷 Scan QR code or enter manually">
+                
+                <button class="mobile-btn btn-success" onclick="processQRScan()" style="width: 100%; margin: 10px 0;">
+                    ✅ Process Scan
+                </button>
+                
+                <button class="mobile-btn btn-info" onclick="generateQRCodes()" style="width: 100%;">
+                    🏷 View All QR Codes
+                </button>
+            </div>
+            
+            <div id="qrResults"></div>
+        </div>
+
+        <!-- RFID Tab -->
+        <div id="rfid" class="tab-content">
+            <div class="rfid-status">
+                <div class="rfid-icon">📡</div>
+                <h3 id="rfidStatusText">Scanning for Equipment...</h3>
+                <p style="margin: 10px 0;">Place equipment near RFID reader</p>
+                <button class="mobile-btn" onclick="simulateRFIDScan()" style="margin: 5px;">🔍 Test Scan</button>
+            </div>
+            
+            <h3>📋 Recent Detections</h3>
+            <div id="rfidLog"></div>
+        </div>
+
+        <!-- Schedule Tab -->
+        <div id="schedule" class="tab-content">
+            <h2>📅 Today's Jobs</h2>
+            <div id="todaysJobs"></div>
+            
+            <h3 style="margin-top: 20px;">📋 Upcoming This Week</h3>
+            <div id="upcomingJobs"></div>
+        </div>
+
+        <!-- Leaderboard Tab -->
+        <div id="leaderboard" class="tab-content">
+            <h2 style="text-align: center; margin-bottom: 20px;">🏆 Team Rankings</h2>
+            <div id="leaderboardList"></div>
+        </div>
+    </div>
+
+    <!-- Achievement Popup -->
+    <div class="achievement" id="achievementPopup">
+        🎉 Achievement Unlocked! +50 XP
+    </div>
+
+    <script>
+        // Mobile-optimized app state
+        let mobileApp = {
+            currentUser: {
+                name: 'Alex Rivera',
+                xp: 6500,
+                level: 12,
+                weeklyXP: 1250
+            },
+            assets: [
+                {
+                    id: 'TP001', name: 'PrompterMax Pro 19"', category: 'Teleprompter', 
+                    status: 'available', location: 'Main Storage', assignedTo: '', price: 150
+                },
+                {
+                    id: 'TP002', name: 'TeleMax Studio 24"', category: 'Teleprompter',
+                    status: 'on-location', location: 'NBC Studios', assignedTo: 'Sarah Johnson', price: 200
+                },
+                {
+                    id: 'CAM001', name: 'Sony FX6 Cinema Camera', category: 'Camera',
+                    status: 'checked-out', location: 'Prep Area', assignedTo: 'Mike Chen', price: 300
+                },
+                {
+                    id: 'AUD001', name: 'Rode Wireless Pro', category: 'Audio',
+                    status: 'available', location: 'Audio Storage', assignedTo: '', price: 75
+                }
+            ],
+            currentTab: 'dashboard'
+        };
+
+        // Tab Navigation
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            mobileApp.currentTab = tabName;
+            
+            // Update content based on tab
+            if (tabName === 'assets') updateAssetList();
+            if (tabName === 'leaderboard') updateLeaderboard();
+            if (tabName === 'schedule') updateSchedule();
+        }
+
+        // Asset Management
+        function updateAssetList() {
+            const container = document.getElementById('assetList');
+            container.innerHTML = '';
+            
+            mobileApp.assets.forEach(asset => {
+                const assetDiv = document.createElement('div');
+                assetDiv.className = `mobile-asset ${asset.status}`;
+                assetDiv.innerHTML = `
+                    <div class="asset-name">${asset.name}</div>
+                    <div class="asset-info">
+                        📂 ${asset.category} • 📍 ${asset.location}<br>
+                        💰 $${asset.price}/day • 🏷 ${asset.id}
+                        ${asset.assignedTo ? `<br>👤 ${asset.assignedTo}` : ''}
+                    </div>
+                    <div class="asset-actions">
+                        <button class="mobile-btn ${asset.status === 'available' ? 'btn-warning' : 'btn-success'}" 
+                                onclick="toggleAssetStatus('${asset.id}')">
+                            ${asset.status === 'available' ? '📤 Check Out' : '📥 Check In'}
+                        </button>
+                        <button class="mobile-btn btn-info" onclick="showAssetQR('${asset.id}')">🏷 QR</button>
+                    </div>
+                `;
+                container.appendChild(assetDiv);
+            });
+        }
+
+        function toggleAssetStatus(assetId) {
+            const asset = mobileApp.assets.find(a => a.id === assetId);
+            if (!asset) return;
+
+            if (asset.status === 'available') {
+                const assignee = prompt('📤 Assign to employee:');
+                if (assignee) {
+                    asset.status = 'checked-out';
+                    asset.assignedTo = assignee;
+                    showAchievement('📤 Equipment Checked Out! +25 XP');
+                    gainXP(25);
+                }
+            } else {
+                asset.status = 'available';
+                asset.assignedTo = '';
+                asset.location = 'Main Storage';
+                showAchievement('📥 Equipment Returned! +20 XP');
+                gainXP(20);
+            }
+            
+            updateAssetList();
+            updateStats();
+        }
+
+        function searchAssets(query) {
+            const filtered = mobileApp.assets.filter(asset =>
+                asset.name.toLowerCase().includes(query.toLowerCase()) ||
+                asset.category.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            const container = document.getElementById('assetList');
+            container.innerHTML = '';
+            
+            filtered.forEach(asset => {
+                const assetDiv = document.createElement('div');
+                assetDiv.className = `mobile-asset ${asset.status}`;
+                assetDiv.innerHTML = `
+                    <div class="asset-name">${asset.name}</div>
+                    <div class="asset-info">
+                        📂 ${asset.category} • 📍 ${asset.location}<br>
+                        💰 $${asset.price}/day
+                        ${asset.assignedTo ? `<br>👤 ${asset.assignedTo}` : ''}
+                    </div>
+                    <div class="asset-actions">
+                        <button class="mobile-btn ${asset.status === 'available' ? 'btn-warning' : 'btn-success'}" 
+                                onclick="toggleAssetStatus('${asset.id}')">
+                            ${asset.status === 'available' ? '📤 Check Out' : '📥 Check In'}
+                        </button>
+                    </div>
+                `;
+                container.appendChild(assetDiv);
+            });
+        }
+
+        // Add Equipment Form
+        function showAddForm() {
+            document.getElementById('addForm').style.display = 'block';
+        }
+
+        function hideAddForm() {
+            document.getElementById('addForm').style.display = 'none';
+        }
+
+        function addNewAsset() {
+            const name = document.getElementById('newAssetName').value;
+            const category = document.getElementById('newAssetCategory').value;
+            const price = document.getElementById('newAssetPrice').value;
+            
+            if (!name || !price) {
+                alert('📝 Please fill in all fields');
+                return;
+            }
+            
+            const newAsset = {
+                id: 'ASSET_' + Date.now(),
+                name: name,
+                category: category,
+                status: 'available',
+                location: 'Main Storage',
+                assignedTo: '',
+                price: parseInt(price)
+            };
+            
+            mobileApp.assets.push(newAsset);
+            updateAssetList();
+            updateStats();
+            hideAddForm();
+            
+            // Clear form
+            document.getElementById('newAssetName').value = '';
+            document.getElementById('newAssetPrice').value = '';
+            
+            gainXP(50);
+            showAchievement('📦 New Equipment Added! +50 XP');
+        }
+
+        // QR Code Functions
+        function processQRScan() {
+            const qrData = document.getElementById('qrInput').value.trim();
+            if (!qrData) {
+                alert('📱 Please enter QR code data');
+                return;
+            }
+
+            const asset = mobileApp.assets.find(a => a.id === qrData);
+            if (!asset) {
+                alert('❌ Equipment not found');
+                return;
+            }
+
+            const action = asset.status === 'available' ? 'check-out' : 'check-in';
+            const employee = action === 'check-out' ? prompt('👤 Employee name:') : null;
+            
+            if (action === 'check-out' && !employee) return;
+
+            if (action === 'check-out') {
+                asset.status = 'checked-out';
+                asset.assignedTo = employee;
+            } else {
+                asset.status = 'available';
+                asset.assignedTo = '';
+            }
+
+            const results = document.getElementById('qrResults');
+            results.innerHTML = `
+                <div class="activity-item">
+                    <div class="activity-time">${new Date().toLocaleTimeString()}</div>
+                    <div class="activity-text">
+                        ✅ ${asset.name} ${action === 'check-out' ? 'checked out to ' + employee : 'checked in'}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('qrInput').value = '';
+            gainXP(30);
+            showAchievement('📱 QR Scan Complete! +30 XP');
+            updateStats();
+        }
+
+        // RFID Functions
+        function simulateRFIDScan() {
+            const randomAsset = mobileApp.assets[Math.floor(Math.random() * mobileApp.assets.length)];
+            const locations = ['Main Storage', 'Prep Area', 'Loading Dock', 'Studio A'];
+            const newLocation = locations[Math.floor(Math.random() * locations.length)];
+            
+            randomAsset.location = newLocation;
+            
+            const logContainer = document.getElementById('rfidLog');
+            const entry = document.createElement('div');
+            entry.className = 'activity-item';
+            entry.innerHTML = `
+                <div class="activity-time">${new Date().toLocaleTimeString()}</div>
+                <div class="activity-text">
+                    📡 Detected: ${randomAsset.name} in ${newLocation}
+                </div>
+            `;
+            logContainer.insertBefore(entry, logContainer.firstChild);
+            
+            // Keep only last 5 entries
+            while (logContainer.children.length > 5) {
+                logContainer.removeChild(logContainer.lastChild);
+            }
+            
+            document.getElementById('rfidStatusText').innerHTML = `Found: ${randomAsset.name}<br>Location: ${newLocation}`;
+            
+            gainXP(10);
+            showAchievement('📡 RFID Detection! +10 XP');
+        }
+
+        // Leaderboard
+        function updateLeaderboard() {
+            const employees = [
+                { name: 'Sarah Johnson', xp: 8750, rentals: 47, rank: 1 },
+                { name: 'Alex Rivera', xp: 6500, rentals: 35, rank: 2 },
+                { name: 'Mike Chen', xp: 5200, rentals: 28, rank: 3 },
+                { name: 'Emma Davis', xp: 4800, rentals: 31, rank: 4 }
+            ];
+
+            const container = document.getElementById('leaderboardList');
+            container.innerHTML = '';
+            
+            employees.forEach(employee => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                item.innerHTML = `
+                    <div class="leader-rank rank-${employee.rank}">${employee.rank}</div>
+                    <div class="leader-info">
+                        <div class="leader-name">${employee.name}</div>
+                        <div class="leader-stats">${employee.xp.toLocaleString()} XP • ${employee.rentals} rentals</div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Schedule
+        function updateSchedule() {
+            const jobs = [
+                { time: '9:00 AM', client: 'NBC News', location: 'NBC Studios', equipment: 2, status: 'ready' },
+                { time: '2:00 PM', client: 'Corporate Event', location: 'Convention Center', equipment: 3, status: 'preparing' },
+                { time: '6:00 PM', client: 'Live Stream', location: 'Studio B', equipment: 1, status: 'confirmed' }
+            ];
+
+            const todaysContainer = document.getElementById('todaysJobs');
+            const upcomingContainer = document.getElementById('upcomingJobs');
+            
+            todaysContainer.innerHTML = '';
+            upcomingContainer.innerHTML = '';
+            
+            jobs.slice(0, 2).forEach(job => {
+                const jobDiv = document.createElement('div');
+                jobDiv.className = 'schedule-item';
+                jobDiv.innerHTML = `
+                    <div class="schedule-time">${job.time}</div>
+                    <div class="schedule-client">${job.client}</div>
+                    <div class="schedule-details">📍 ${job.location} • 📦 ${job.equipment} items • Status: ${job.status}</div>
+                `;
+                todaysContainer.appendChild(jobDiv);
+            });
+            
+            // Upcoming jobs
+            const upcoming = [
+                { date: 'Tomorrow', client: 'ABC Morning Show', time: '6:00 AM' },
+                { date: 'Dec 30', client: 'New Year Special', time: '10:00 PM' }
+            ];
+            
+            upcoming.forEach(job => {
+                const jobDiv = document.createElement('div');
+                jobDiv.className = 'schedule-item';
+                jobDiv.innerHTML = `
+                    <div class="schedule-time">${job.date}</div>
+                    <div class="schedule-client">${job.client}</div>
+                    <div class="schedule-details">🕐 ${job.time}</div>
+                `;
+                upcomingContainer.appendChild(jobDiv);
+            });
+        }
+
+        // Gamification Functions
+        function gainXP(amount) {
+            mobileApp.currentUser.xp += amount;
+            mobileApp.currentUser.weeklyXP += amount;
+            updateStats();
+        }
+
+        function showAchievement(text) {
+            const popup = document.getElementById('achievementPopup');
+            popup.textContent = text;
+            popup.classList.add('show');
+            
+            // Add vibration on mobile
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100]);
+            }
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateStats() {
+            document.getElementById('userXP').textContent = mobileApp.currentUser.xp.toLocaleString();
+            
+            const available = mobileApp.assets.filter(a => a.status === 'available').length;
+            document.getElementById('availableCount').textContent = available;
+        }
+
+        // Recent Activity
+        function updateRecentActivity() {
+            const activities = [
+                { time: '10:30 AM', text: '📤 Sarah checked out PrompterMax Pro for NBC' },
+                { time: '9:45 AM', text: '📡 RFID detected Sony FX6 in Prep Area' },
+                { time: '9:15 AM', text: '📅 New booking: Corporate Event Dec 30' },
+                { time: '8:30 AM', text: '📥 Mike returned Rode Wireless Pro' }
+            ];
+            
+            const container = document.getElementById('recentActivity');
+            container.innerHTML = '';
+            
+            activities.forEach(activity => {
+                const activityDiv = document.createElement('div');
+                activityDiv.className = 'activity-item';
+                activityDiv.innerHTML = `
+                    <div class="activity-time">${activity.time}</div>
+                    <div class="activity-text">${activity.text}</div>
+                `;
+                container.appendChild(activityDiv);
+            });
+        }
+
+        // QR Code Generation
+        function generateQRCodes() {
+            const results = document.getElementById('qrResults');
+            results.innerHTML = '<h3>🏷 Equipment QR Codes</h3>';
+            
+            mobileApp.assets.forEach(asset => {
+                const qrDiv = document.createElement('div');
+                qrDiv.className = 'activity-item';
+                qrDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>${asset.name}</strong><br>
+                            <span style="font-size: 12px; color: #666;">QR: ${asset.id}</span>
+                        </div>
+                        <button class="mobile-btn btn-info" onclick="alert('QR Code: ${asset.id}\\nShow this to scanner')">
+                            📱 Show QR
+                        </button>
+                    </div>
+                `;
+                results.appendChild(qrDiv);
+            });
+            
+            gainXP(25);
+            showAchievement('🏷 QR Codes Generated! +25 XP');
+        }
+
+        function showAssetQR(assetId) {
+            const asset = mobileApp.assets.find(a => a.id === assetId);
+            alert(`📱 QR Code for ${asset.name}:\n\n${assetId}\n\nShow this code to the scanner or type it manually.`);
+        }
+
+        // Initialize Mobile App
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            updateAssetList();
+            updateRecentActivity();
+            updateLeaderboard();
+            updateSchedule();
+            
+            // Auto RFID simulation every 15 seconds
+            setInterval(() => {
+                if (mobileApp.currentTab === 'rfid' && Math.random() < 0.4) {
+                    simulateRFIDScan();
+                }
+            }, 15000);
+        });
+
+        // Touch-friendly interactions
+        document.addEventListener('touchstart', function() {}, { passive: true });
+        
+        // Prevent zoom on form inputs
+        document.addEventListener('touchstart', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+                e.target.style.fontSize = '16px';
+            }
+        });
+    </script>
+</body>
+</html>
