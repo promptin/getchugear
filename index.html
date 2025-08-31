@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PrompterRent Pro Mobile</title>
+    <title>GethuGear - Personal Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -23,9 +23,82 @@
         .container {
             padding: 10px;
             max-width: 100%;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
         }
 
-        /* Mobile-Optimized Header */
+        /* Login Screen */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .login-form {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .employee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .employee-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .employee-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .employee-avatar {
+            font-size: 2em;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Header with User Info */
         .header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
@@ -33,20 +106,33 @@
             padding: 20px 15px;
             margin-bottom: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .header h1 {
-            font-size: 1.8em;
+        .user-info h1 {
+            font-size: 1.5em;
             background: linear-gradient(45deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
-        .header-subtitle {
+        .user-subtitle {
             color: #666;
             font-size: 0.9em;
+        }
+
+        .logout-btn {
+            background: linear-gradient(45deg, #f56565, #e53e3e);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
         }
 
         /* Mobile Stats */
@@ -76,7 +162,7 @@
             opacity: 0.9;
         }
 
-        /* Mobile Navigation */
+        /* Navigation */
         .mobile-nav {
             display: flex;
             background: rgba(255, 255, 255, 0.9);
@@ -121,8 +207,8 @@
             display: block;
         }
 
-        /* Mobile Asset Cards */
-        .mobile-asset {
+        /* My Equipment Cards - Only assigned to user */
+        .my-equipment {
             background: white;
             border-radius: 12px;
             padding: 15px;
@@ -131,25 +217,24 @@
             border-left: 5px solid #48bb78;
         }
 
-        .mobile-asset.checked-out { border-left-color: #ed8936; }
-        .mobile-asset.on-location { border-left-color: #4299e1; }
-        .mobile-asset.maintenance { border-left-color: #f56565; }
+        .my-equipment.checked-out { border-left-color: #ed8936; }
+        .my-equipment.on-location { border-left-color: #4299e1; }
 
-        .asset-name {
+        .equipment-name {
             font-weight: bold;
             font-size: 16px;
             margin-bottom: 8px;
             color: #333;
         }
 
-        .asset-info {
+        .equipment-info {
             font-size: 14px;
             color: #666;
             line-height: 1.4;
             margin-bottom: 12px;
         }
 
-        .asset-actions {
+        .equipment-actions {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
@@ -177,7 +262,43 @@
         .btn-warning { background: linear-gradient(45deg, #ed8936, #dd6b20); }
         .btn-info { background: linear-gradient(45deg, #4299e1, #3182ce); }
 
-        /* QR Scanner Interface */
+        /* My Jobs Only */
+        .my-job {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-time {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .job-client {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .job-details {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .job-equipment {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #333;
+        }
+
+        /* QR Scanner */
         .qr-interface {
             text-align: center;
             padding: 20px;
@@ -196,54 +317,6 @@
         .qr-input:focus {
             outline: none;
             border-color: #667eea;
-        }
-
-        /* RFID Status */
-        .rfid-status {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            margin: 15px 0;
-        }
-
-        .rfid-icon {
-            font-size: 3em;
-            margin-bottom: 10px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-        }
-
-        /* Schedule Items */
-        .schedule-item {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px 0;
-            border-left: 4px solid #667eea;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .schedule-time {
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 5px;
-        }
-
-        .schedule-client {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .schedule-details {
-            font-size: 14px;
-            color: #666;
         }
 
         /* Achievement Popup */
@@ -270,92 +343,7 @@
             transform: translateX(-50%) translateY(10px);
         }
 
-        /* Leaderboard */
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 8px 0;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .leader-rank {
-            font-size: 1.5em;
-            font-weight: bold;
-            width: 40px;
-            text-align: center;
-            margin-right: 15px;
-        }
-
-        .rank-1 { color: #ffd700; }
-        .rank-2 { color: #c0c0c0; }
-        .rank-3 { color: #cd7f32; }
-
-        .leader-info {
-            flex: 1;
-        }
-
-        .leader-name {
-            font-weight: 600;
-            margin-bottom: 3px;
-        }
-
-        .leader-stats {
-            font-size: 14px;
-            color: #666;
-        }
-
-        /* Search Bar */
-        .search-bar {
-            width: 100%;
-            padding: 12px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 25px;
-            font-size: 16px;
-            margin-bottom: 15px;
-            background: white;
-        }
-
-        .search-bar:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        /* Add Equipment Form */
-        .add-form {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin: 15px 0;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        /* Activity Feed */
+        /* Activity Feed - Personal Only */
         .activity-item {
             background: white;
             padding: 12px 15px;
@@ -377,173 +365,297 @@
             color: #333;
         }
 
-        /* Loading State */
-        .loading {
+        /* No Items Message */
+        .no-items {
             text-align: center;
-            padding: 20px;
+            padding: 40px 20px;
             color: #666;
+            font-style: italic;
         }
 
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 10px auto;
+        .no-items-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            opacity: 0.5;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* iOS Safe Areas */
-        .container {
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-            padding-left: env(safe-area-inset-left);
-            padding-right: env(safe-area-inset-right);
-        }
-
-        /* Hide scrollbars on mobile */
-        ::-webkit-scrollbar {
+        /* Manager Override Button (Hidden by Default) */
+        .manager-controls {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+            font-size: 12px;
             display: none;
+        }
+
+        .manager-controls.show {
+            display: block;
+        }
+
+        /* Notification System */
+        .notification {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1500;
+            font-weight: bold;
+            text-align: center;
+            max-width: 90%;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(10px);
+        }
+
+        .notification.urgent {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            animation: urgentPulse 2s infinite;
+        }
+
+        @keyframes urgentPulse {
+            0%, 100% { transform: translateX(-50%) translateY(10px) scale(1); }
+            50% { transform: translateX(-50%) translateY(10px) scale(1.05); }
+        }
+
+        /* Early Pickup Bonus */
+        .early-pickup-bonus {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+            border: 3px solid #22543d;
+            animation: bonusGlow 2s infinite;
+        }
+
+        @keyframes bonusGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(72, 187, 120, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(72, 187, 120, 0.8); }
+        }
+
+        /* Job Status Colors */
+        .job-pending { border-left-color: #ed8936; }
+        .job-ready { border-left-color: #4299e1; }
+        .job-early-pickup { border-left-color: #48bb78; }
+        .job-in-progress { border-left-color: #667eea; }
+        .job-completed { border-left-color: #9f7aea; }
+        @media (min-width: 768px) {
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            
+            .login-form {
+                padding: 50px 40px;
+            }
+            
+            .mobile-stats {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .mobile-nav {
+                justify-content: center;
+            }
+            
+            .nav-item {
+                min-width: 120px;
+                padding: 15px 20px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Mobile Header -->
-        <div class="header">
-            <h1>📱 PrompterRent Pro</h1>
-            <p class="header-subtitle">Mobile Asset Management</p>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-form">
+            <h1 class="login-title">🎬 GethuGear</h1>
+            <p class="login-subtitle">Select Your Profile</p>
             
-            <div class="mobile-stats">
-                <div class="stat-card">
-                    <span class="stat-number" id="userXP">6,500</span>
-                    <span class="stat-label">XP • Level 12</span>
-                </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, #48cae4, #023e8a);">
-                    <span class="stat-number" id="availableCount">28</span>
-                    <span class="stat-label">Available</span>
-                </div>
+            <div class="employee-grid">
+                <button class="employee-card" onclick="login('sarah')">
+                    <span class="employee-avatar">🎬</span>
+                    Sarah Rohan<br>
+                    <small>Promptin' Op</small>
+                </button>
+                <button class="employee-card" onclick="login('nathaniel')">
+                    <span class="employee-avatar">📹</span>
+                    Nathaniel Jackson<br>
+                    <small>Promptin' Op</small>
+                </button>
+                <button class="employee-card" onclick="login('cher')">
+                    <span class="employee-avatar">🎭</span>
+                    Cher Costea<br>
+                    <small>Promptin' Op</small>
+                </button>
+                <button class="employee-card" onclick="login('colin')">
+                    <span class="employee-avatar">🎪</span>
+                    Colin Marshall<br>
+                    <small>Promptin' Op</small>
+                </button>
+                <button class="employee-card" onclick="login('captain')" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                    <span class="employee-avatar">⚓</span>
+                    Captain Dave<br>
+                    <small>Manager</small>
+                </button>
+                <button class="employee-card" onclick="login('vanny')" style="background: linear-gradient(135deg, #a8edea, #fed6e3);">
+                    <span class="employee-avatar">👑</span>
+                    Vanny<br>
+                    <small>Manager</small>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App (Hidden Until Login) -->
+    <div class="container" id="mainApp" style="display: none;">
+        <!-- Header with User Info -->
+        <div class="header">
+            <div class="user-info">
+                <h1 id="userName">Welcome User</h1>
+                <p class="user-subtitle" id="userRole">Employee Dashboard</p>
+            </div>
+            <button class="logout-btn" onclick="logout()">👋 Logout</button>
+        </div>
+
+        <!-- Personal Stats -->
+        <div class="mobile-stats">
+            <div class="stat-card">
+                <span class="stat-number" id="myXP">0</span>
+                <span class="stat-label">My XP</span>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #48cae4, #023e8a);">
+                <span class="stat-number" id="myEquipmentCount">0</span>
+                <span class="stat-label">My Gear</span>
             </div>
         </div>
 
-        <!-- Mobile Navigation -->
+        <!-- Manager Controls (Hidden for Regular Employees) -->
+        <div class="manager-controls" id="managerControls">
+            <p>👑 Manager Mode: You can see all equipment and jobs</p>
+            <button class="mobile-btn" onclick="toggleManagerView()" style="margin-top: 10px;">
+                <span id="viewToggle">Switch to Employee View</span>
+            </button>
+        </div>
+
+        <!-- Navigation -->
         <div class="mobile-nav">
-            <button class="nav-item active" onclick="showTab('dashboard')">📊<br>Home</button>
-            <button class="nav-item" onclick="showTab('assets')">📦<br>Assets</button>
+            <button class="nav-item active" onclick="showTab('dashboard')">🏠<br>Home</button>
+            <button class="nav-item" onclick="showTab('equipment')">📦<br>My Gear</button>
+            <button class="nav-item" onclick="showTab('jobs')">📅<br>My Jobs</button>
             <button class="nav-item" onclick="showTab('qr')">📱<br>QR Scan</button>
-            <button class="nav-item" onclick="showTab('rfid')">📡<br>RFID</button>
-            <button class="nav-item" onclick="showTab('schedule')">📅<br>Jobs</button>
-            <button class="nav-item" onclick="showTab('leaderboard')">🏆<br>Ranks</button>
+            <button class="nav-item" onclick="showTab('profile')" id="profileTab">👤<br>Profile</button>
+            <button class="nav-item" onclick="showTab('createJob')" id="createJobTab" style="display: none;">➕<br>Create Job</button>
         </div>
 
         <!-- Dashboard Tab -->
         <div id="dashboard" class="tab-content active">
-            <h2 style="margin-bottom: 15px;">🎯 Today's Missions</h2>
+            <h2 style="margin-bottom: 15px;">🎯 Today's Tasks</h2>
+            <div id="todaysTasks"></div>
             
-            <div class="schedule-item" style="background: linear-gradient(135deg, #48bb78, #38a169); color: white;">
-                <div class="schedule-time" style="color: white;">Daily Challenge</div>
-                <div class="schedule-client">Process 10 Equipment Scans</div>
-                <div class="schedule-details" style="color: rgba(255,255,255,0.9);">Progress: 7/10 • Reward: +100 XP</div>
-            </div>
-
-            <div class="schedule-item" style="background: linear-gradient(135deg, #4299e1, #3182ce); color: white;">
-                <div class="schedule-time" style="color: white;">Speed Challenge</div>
-                <div class="schedule-client">Complete Check-out in Under 2 Minutes</div>
-                <div class="schedule-details" style="color: rgba(255,255,255,0.9);">Active Now • Reward: +150 XP</div>
-            </div>
-
-            <h3 style="margin: 20px 0 15px 0;">📈 Recent Activity</h3>
-            <div id="recentActivity"></div>
+            <h3 style="margin: 20px 0 15px 0;">📈 My Recent Activity</h3>
+            <div id="myActivity"></div>
         </div>
 
-        <!-- Assets Tab -->
-        <div id="assets" class="tab-content">
-            <input type="text" class="search-bar" placeholder="🔍 Search equipment..." oninput="searchAssets(this.value)">
-            
-            <button class="mobile-btn btn-success" onclick="showAddForm()" style="width: 100%; margin-bottom: 15px;">
-                ➕ Add New Equipment
-            </button>
+        <!-- My Equipment Tab -->
+        <div id="equipment" class="tab-content">
+            <h2 style="margin-bottom: 15px;">📦 My Equipment</h2>
+            <div id="myEquipmentList"></div>
+        </div>
 
-            <div id="addForm" class="add-form" style="display: none;">
-                <div class="form-group">
-                    <label class="form-label">Equipment Name</label>
-                    <input type="text" class="form-input" id="newAssetName" placeholder="e.g., PrompterMax Pro 19">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Category</label>
-                    <select class="form-input" id="newAssetCategory">
-                        <option>Teleprompter</option>
-                        <option>Camera</option>
-                        <option>Audio</option>
-                        <option>Lighting</option>
-                        <option>Accessories</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Daily Rental Rate</label>
-                    <input type="number" class="form-input" id="newAssetPrice" placeholder="150">
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button class="mobile-btn btn-success" onclick="addNewAsset()">✅ Add Equipment</button>
-                    <button class="mobile-btn" onclick="hideAddForm()">❌ Cancel</button>
-                </div>
-            </div>
-            
-            <div id="assetList"></div>
+        <!-- My Jobs Tab -->
+        <div id="jobs" class="tab-content">
+            <h2 style="margin-bottom: 15px;">📅 My Jobs</h2>
+            <div id="myJobsList"></div>
         </div>
 
         <!-- QR Scanner Tab -->
         <div id="qr" class="tab-content">
             <div class="qr-interface">
                 <h2>📱 QR Code Scanner</h2>
-                <p style="margin: 10px 0; color: #666;">Scan or enter QR code to check equipment in/out</p>
+                <p style="margin: 10px 0; color: #666;">Scan your assigned equipment</p>
                 
-                <input type="text" class="qr-input" id="qrInput" placeholder="📷 Scan QR code or enter manually">
+                <input type="text" class="qr-input" id="qrInput" placeholder="📷 Scan QR code">
                 
-                <button class="mobile-btn btn-success" onclick="processQRScan()" style="width: 100%; margin: 10px 0;">
+                <button class="mobile-btn btn-success" onclick="processMyQRScan()" style="width: 100%; margin: 10px 0;">
                     ✅ Process Scan
-                </button>
-                
-                <button class="mobile-btn btn-info" onclick="generateQRCodes()" style="width: 100%;">
-                    🏷 View All QR Codes
                 </button>
             </div>
             
             <div id="qrResults"></div>
         </div>
 
-        <!-- RFID Tab -->
-        <div id="rfid" class="tab-content">
-            <div class="rfid-status">
-                <div class="rfid-icon">📡</div>
-                <h3 id="rfidStatusText">Scanning for Equipment...</h3>
-                <p style="margin: 10px 0;">Place equipment near RFID reader</p>
-                <button class="mobile-btn" onclick="simulateRFIDScan()" style="margin: 5px;">🔍 Test Scan</button>
+        <!-- Profile Tab -->
+        <div id="profile" class="tab-content">
+            <h2 style="margin-bottom: 15px;">👤 My Profile</h2>
+            <div id="myProfileInfo"></div>
+        </div>
+
+        <!-- Create Job Tab (Managers Only) -->
+        <div id="createJob" class="tab-content">
+            <h2 style="margin-bottom: 15px;">➕ Create New Job</h2>
+            
+            <div class="add-form">
+                <div class="form-group">
+                    <label class="form-label">Client Name</label>
+                    <input type="text" class="form-input" id="jobClient" placeholder="e.g., NBC News">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Job Date</label>
+                    <input type="date" class="form-input" id="jobDate">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Call Time</label>
+                    <input type="time" class="form-input" id="jobTime">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-input" id="jobLocation" placeholder="e.g., NBC Studios, 123 Main St">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Assign to Operator</label>
+                    <select class="form-input" id="jobOperator">
+                        <option value="">Select operator...</option>
+                        <option value="sarah">Sarah Rohan</option>
+                        <option value="nathaniel">Nathaniel Jackson</option>
+                        <option value="cher">Cher Costea</option>
+                        <option value="colin">Colin Marshall</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Required Equipment</label>
+                    <div id="equipmentCheckboxes" style="margin-top: 10px;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Special Instructions</label>
+                    <textarea class="form-input" id="jobInstructions" placeholder="Any special requirements or notes..."></textarea>
+                </div>
+                
+                <button class="mobile-btn btn-success" onclick="createNewJob()" style="width: 100%; margin-top: 20px;">
+                    🎬 Create Job & Notify Operator
+                </button>
             </div>
-            
-            <h3>📋 Recent Detections</h3>
-            <div id="rfidLog"></div>
-        </div>
-
-        <!-- Schedule Tab -->
-        <div id="schedule" class="tab-content">
-            <h2>📅 Today's Jobs</h2>
-            <div id="todaysJobs"></div>
-            
-            <h3 style="margin-top: 20px;">📋 Upcoming This Week</h3>
-            <div id="upcomingJobs"></div>
-        </div>
-
-        <!-- Leaderboard Tab -->
-        <div id="leaderboard" class="tab-content">
-            <h2 style="text-align: center; margin-bottom: 20px;">🏆 Team Rankings</h2>
-            <div id="leaderboardList"></div>
         </div>
     </div>
 
@@ -552,209 +664,375 @@
         🎉 Achievement Unlocked! +50 XP
     </div>
 
+    <!-- Notification System -->
+    <div class="notification" id="notificationPopup">
+        📢 New job assigned!
+    </div>
+
     <script>
-        // Mobile-optimized app state
-        let mobileApp = {
-            currentUser: {
-                name: 'Alex Rivera',
-                xp: 6500,
-                level: 12,
-                weeklyXP: 1250
+        // Employee Database with Individual Equipment and Jobs
+        const employeeData = {
+            sarah: {
+                name: 'Sarah Rohan',
+                role: 'Promptin\' Op',
+                avatar: '🎬',
+                xp: 0,
+                level: 1,
+                equipment: [
+                    { id: 'TP001', name: 'PrompterMax Pro 19"', status: 'checked-out', location: 'With Sarah', jobId: 'JOB001' },
+                    { id: 'CAM001', name: 'Sony FX6 Cinema', status: 'on-location', location: 'NBC Studios', jobId: 'JOB001' }
+                ],
+                jobs: [
+                    { id: 'JOB001', client: 'NBC News', date: 'Today', time: '2:00 PM', location: 'NBC Studios', equipment: ['TP001', 'CAM001'], status: 'in-progress' },
+                    { id: 'JOB002', client: 'CNN Interview', date: 'Tomorrow', time: '10:00 AM', location: 'CNN Building', equipment: ['TP002'], status: 'scheduled' }
+                ]
             },
-            assets: [
-                {
-                    id: 'TP001', name: 'PrompterMax Pro 19"', category: 'Teleprompter', 
-                    status: 'available', location: 'Main Storage', assignedTo: '', price: 150
-                },
-                {
-                    id: 'TP002', name: 'TeleMax Studio 24"', category: 'Teleprompter',
-                    status: 'on-location', location: 'NBC Studios', assignedTo: 'Sarah Johnson', price: 200
-                },
-                {
-                    id: 'CAM001', name: 'Sony FX6 Cinema Camera', category: 'Camera',
-                    status: 'checked-out', location: 'Prep Area', assignedTo: 'Mike Chen', price: 300
-                },
-                {
-                    id: 'AUD001', name: 'Rode Wireless Pro', category: 'Audio',
-                    status: 'available', location: 'Audio Storage', assignedTo: '', price: 75
-                }
-            ],
-            currentTab: 'dashboard'
+            nathaniel: {
+                name: 'Nathaniel Jackson',
+                role: 'Promptin\' Op',
+                avatar: '📹',
+                xp: 0,
+                level: 1,
+                equipment: [
+                    { id: 'TP003', name: 'Compact Teleprompter 15"', status: 'available', location: 'Main Storage', jobId: null },
+                    { id: 'AUD001', name: 'Rode Wireless Pro', status: 'checked-out', location: 'With Nathaniel', jobId: 'JOB003' }
+                ],
+                jobs: [
+                    { id: 'JOB003', client: 'Corporate Event', date: 'Dec 30', time: '3:00 PM', location: 'Convention Center', equipment: ['TP003', 'AUD001'], status: 'preparing' }
+                ]
+            },
+            cher: {
+                name: 'Cher Costea',
+                role: 'Promptin\' Op',
+                avatar: '🎭',
+                xp: 0,
+                level: 1,
+                equipment: [
+                    { id: 'TP004', name: 'Mobile Teleprompter', status: 'available', location: 'Operations Office', jobId: null },
+                    { id: 'LIT001', name: 'LED Light Kit', status: 'on-location', location: 'Studio B', jobId: 'JOB004' }
+                ],
+                jobs: [
+                    { id: 'JOB004', client: 'Live Stream Event', date: 'Today', time: '6:00 PM', location: 'Studio B', equipment: ['LIT001'], status: 'setup' },
+                    { id: 'JOB005', client: 'Training Session', date: 'Dec 28', time: '9:00 AM', location: 'Conference Room', equipment: ['TP004'], status: 'confirmed' }
+                ]
+            },
+            colin: {
+                name: 'Colin Marshall',
+                role: 'Promptin\' Op',
+                avatar: '🎪',
+                xp: 0,
+                level: 1,
+                equipment: [
+                    { id: 'TP005', name: 'Desktop Teleprompter 17"', status: 'checked-out', location: 'With Colin', jobId: 'JOB006' }
+                ],
+                jobs: [
+                    { id: 'JOB006', client: 'Equipment Pickup', date: 'Today', time: '4:00 PM', location: 'Client Site', equipment: ['TP005'], status: 'pickup' }
+                ]
+            }
         };
+
+        // Current user state
+        let currentUser = null;
+        let isManagerMode = false;
+        let allEquipment = [
+            { id: 'TP001', name: 'PrompterMax Pro 19"', category: 'Teleprompter', available: true },
+            { id: 'TP002', name: 'TeleMax Studio 24"', category: 'Teleprompter', available: true },
+            { id: 'TP003', name: 'Compact Teleprompter 15"', category: 'Teleprompter', available: true },
+            { id: 'TP004', name: 'Mobile Teleprompter', category: 'Teleprompter', available: true },
+            { id: 'TP005', name: 'Desktop Teleprompter 17"', category: 'Teleprompter', available: true },
+            { id: 'CAM001', name: 'Sony FX6 Cinema', category: 'Camera', available: true },
+            { id: 'AUD001', name: 'Rode Wireless Pro', category: 'Audio', available: true },
+            { id: 'LIT001', name: 'LED Light Kit', category: 'Lighting', available: true }
+        ];
+
+        // Login function
+        function login(employeeId) {
+            if (employeeId === 'captain') {
+                currentUser = {
+                    name: 'Captain Dave',
+                    role: 'Manager',
+                    avatar: '⚓',
+                    xp: 0,
+                    level: 1,
+                    equipment: getAllEquipment(),
+                    jobs: getAllJobs()
+                };
+                isManagerMode = true;
+                document.getElementById('managerControls').classList.add('show');
+                document.getElementById('createJobTab').style.display = 'block';
+            } else if (employeeId === 'vanny') {
+                currentUser = {
+                    name: 'Vanny',
+                    role: 'Manager',
+                    avatar: '👑',
+                    xp: 0,
+                    level: 1,
+                    equipment: getAllEquipment(),
+                    jobs: getAllJobs()
+                };
+                isManagerMode = true;
+                document.getElementById('managerControls').classList.add('show');
+                document.getElementById('createJobTab').style.display = 'block';
+            } else {
+                currentUser = employeeData[employeeId];
+                isManagerMode = false;
+                document.getElementById('managerControls').classList.remove('show');
+                document.getElementById('createJobTab').style.display = 'none';
+            }
+
+            // Hide login screen and show app
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+
+            // Update UI
+            updateUserInterface();
+            updatePersonalDashboard();
+            
+            if (isManagerMode) {
+                populateEquipmentCheckboxes();
+            }
+        }
+
+        // Logout function
+        function logout() {
+            currentUser = null;
+            isManagerMode = false;
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+        }
+
+        // Update user interface with personal info
+        function updateUserInterface() {
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userRole').textContent = currentUser.role;
+            document.getElementById('myXP').textContent = currentUser.xp.toLocaleString();
+            document.getElementById('myEquipmentCount').textContent = currentUser.equipment.length;
+        }
 
         // Tab Navigation
         function showTab(tabName) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
             
-            // Show selected tab
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
-            mobileApp.currentTab = tabName;
             
-            // Update content based on tab
-            if (tabName === 'assets') updateAssetList();
-            if (tabName === 'leaderboard') updateLeaderboard();
-            if (tabName === 'schedule') updateSchedule();
+            if (tabName === 'equipment') updateMyEquipment();
+            if (tabName === 'jobs') updateMyJobs();
+            if (tabName === 'profile') updateMyProfile();
+            if (tabName === 'createJob' && isManagerMode) populateEquipmentCheckboxes();
         }
 
-        // Asset Management
-        function updateAssetList() {
-            const container = document.getElementById('assetList');
-            container.innerHTML = '';
+        // Update Personal Dashboard
+        function updatePersonalDashboard() {
+            // Today's Tasks
+            const tasksContainer = document.getElementById('todaysTasks');
+            tasksContainer.innerHTML = '';
             
-            mobileApp.assets.forEach(asset => {
-                const assetDiv = document.createElement('div');
-                assetDiv.className = `mobile-asset ${asset.status}`;
-                assetDiv.innerHTML = `
-                    <div class="asset-name">${asset.name}</div>
-                    <div class="asset-info">
-                        📂 ${asset.category} • 📍 ${asset.location}<br>
-                        💰 $${asset.price}/day • 🏷 ${asset.id}
-                        ${asset.assignedTo ? `<br>👤 ${asset.assignedTo}` : ''}
-                    </div>
-                    <div class="asset-actions">
-                        <button class="mobile-btn ${asset.status === 'available' ? 'btn-warning' : 'btn-success'}" 
-                                onclick="toggleAssetStatus('${asset.id}')">
-                            ${asset.status === 'available' ? '📤 Check Out' : '📥 Check In'}
-                        </button>
-                        <button class="mobile-btn btn-info" onclick="showAssetQR('${asset.id}')">🏷 QR</button>
+            const todayJobs = currentUser.jobs.filter(job => job.date === 'Today');
+            
+            if (todayJobs.length === 0) {
+                tasksContainer.innerHTML = `
+                    <div class="no-items">
+                        <div class="no-items-icon">🏖</div>
+                        <p>No jobs scheduled for today!</p>
+                        <p>Enjoy your day 😊</p>
                     </div>
                 `;
-                container.appendChild(assetDiv);
-            });
-        }
-
-        function toggleAssetStatus(assetId) {
-            const asset = mobileApp.assets.find(a => a.id === assetId);
-            if (!asset) return;
-
-            if (asset.status === 'available') {
-                const assignee = prompt('📤 Assign to employee:');
-                if (assignee) {
-                    asset.status = 'checked-out';
-                    asset.assignedTo = assignee;
-                    showAchievement('📤 Equipment Checked Out! +25 XP');
-                    gainXP(25);
-                }
             } else {
-                asset.status = 'available';
-                asset.assignedTo = '';
-                asset.location = 'Main Storage';
-                showAchievement('📥 Equipment Returned! +20 XP');
-                gainXP(20);
+                todayJobs.forEach(job => {
+                    const taskDiv = document.createElement('div');
+                    taskDiv.className = 'my-job';
+                    taskDiv.innerHTML = `
+                        <div class="job-time">${job.time}</div>
+                        <div class="job-client">${job.client}</div>
+                        <div class="job-details">📍 ${job.location} • Status: ${job.status}</div>
+                        <div class="job-equipment">Equipment needed: ${job.equipment.join(', ') || 'None'}</div>
+                    `;
+                    tasksContainer.appendChild(taskDiv);
+                });
             }
-            
-            updateAssetList();
-            updateStats();
-        }
 
-        function searchAssets(query) {
-            const filtered = mobileApp.assets.filter(asset =>
-                asset.name.toLowerCase().includes(query.toLowerCase()) ||
-                asset.category.toLowerCase().includes(query.toLowerCase())
-            );
+            // My Recent Activity
+            const activityContainer = document.getElementById('myActivity');
+            const activities = [
+                { time: '2 hours ago', text: `📦 Checked out ${currentUser.equipment[0]?.name || 'equipment'}` },
+                { time: '1 day ago', text: `✅ Completed job for ${currentUser.jobs[0]?.client || 'client'}` },
+                { time: '2 days ago', text: `🎉 Gained 50 XP for on-time delivery` },
+                ...(currentUser.xp >= 1000 ? [{ time: 'Recent', text: '☕ Earned coffee gift certificate! (1000 XP milestone)' }] : [])
+            ];
             
-            const container = document.getElementById('assetList');
-            container.innerHTML = '';
-            
-            filtered.forEach(asset => {
-                const assetDiv = document.createElement('div');
-                assetDiv.className = `mobile-asset ${asset.status}`;
-                assetDiv.innerHTML = `
-                    <div class="asset-name">${asset.name}</div>
-                    <div class="asset-info">
-                        📂 ${asset.category} • 📍 ${asset.location}<br>
-                        💰 $${asset.price}/day
-                        ${asset.assignedTo ? `<br>👤 ${asset.assignedTo}` : ''}
-                    </div>
-                    <div class="asset-actions">
-                        <button class="mobile-btn ${asset.status === 'available' ? 'btn-warning' : 'btn-success'}" 
-                                onclick="toggleAssetStatus('${asset.id}')">
-                            ${asset.status === 'available' ? '📤 Check Out' : '📥 Check In'}
-                        </button>
-                    </div>
+            activityContainer.innerHTML = '';
+            activities.forEach(activity => {
+                const activityDiv = document.createElement('div');
+                activityDiv.className = 'activity-item';
+                activityDiv.innerHTML = `
+                    <div class="activity-time">${activity.time}</div>
+                    <div class="activity-text">${activity.text}</div>
                 `;
-                container.appendChild(assetDiv);
+                activityContainer.appendChild(activityDiv);
             });
         }
 
-        // Add Equipment Form
-        function showAddForm() {
-            document.getElementById('addForm').style.display = 'block';
-        }
-
-        function hideAddForm() {
-            document.getElementById('addForm').style.display = 'none';
-        }
-
-        function addNewAsset() {
-            const name = document.getElementById('newAssetName').value;
-            const category = document.getElementById('newAssetCategory').value;
-            const price = document.getElementById('newAssetPrice').value;
+        // Update My Equipment
+        function updateMyEquipment() {
+            const container = document.getElementById('myEquipmentList');
+            container.innerHTML = '';
             
-            if (!name || !price) {
-                alert('📝 Please fill in all fields');
+            if (currentUser.equipment.length === 0) {
+                container.innerHTML = `
+                    <div class="no-items">
+                        <div class="no-items-icon">📦</div>
+                        <p>No equipment assigned to you</p>
+                        <p>Check with your manager for assignments</p>
+                    </div>
+                `;
                 return;
             }
-            
-            const newAsset = {
-                id: 'ASSET_' + Date.now(),
-                name: name,
-                category: category,
-                status: 'available',
-                location: 'Main Storage',
-                assignedTo: '',
-                price: parseInt(price)
-            };
-            
-            mobileApp.assets.push(newAsset);
-            updateAssetList();
-            updateStats();
-            hideAddForm();
-            
-            // Clear form
-            document.getElementById('newAssetName').value = '';
-            document.getElementById('newAssetPrice').value = '';
-            
-            gainXP(50);
-            showAchievement('📦 New Equipment Added! +50 XP');
+
+            currentUser.equipment.forEach(equipment => {
+                const equipDiv = document.createElement('div');
+                equipDiv.className = `my-equipment ${equipment.status}`;
+                equipDiv.innerHTML = `
+                    <div class="equipment-name">${equipment.name}</div>
+                    <div class="equipment-info">
+                        📍 ${equipment.location}<br>
+                        🏷 ID: ${equipment.id}<br>
+                        ${equipment.jobId ? `🎬 Job: ${equipment.jobId}` : '✅ Available for assignment'}
+                    </div>
+                    <div class="equipment-actions">
+                        <button class="mobile-btn btn-info" onclick="updateEquipmentStatus('${equipment.id}')">
+                            📍 Update Location
+                        </button>
+                        <button class="mobile-btn btn-success" onclick="showEquipmentQR('${equipment.id}')">
+                            🏷 QR Code
+                        </button>
+                    </div>
+                `;
+                container.appendChild(equipDiv);
+            });
         }
 
-        // QR Code Functions
-        function processQRScan() {
+        // Update My Jobs
+        function updateMyJobs() {
+            const container = document.getElementById('myJobsList');
+            container.innerHTML = '';
+            
+            if (currentUser.jobs.length === 0) {
+                container.innerHTML = `
+                    <div class="no-items">
+                        <div class="no-items-icon">📅</div>
+                        <p>No jobs assigned to you</p>
+                        <p>New assignments will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+
+            currentUser.jobs.forEach(job => {
+                const jobDiv = document.createElement('div');
+                jobDiv.className = `my-job job-${job.status}`;
+                
+                // Check if early pickup bonus available
+                const callTime = new Date(`${job.date} ${job.time}`);
+                const now = new Date();
+                const thirtyMinsBefore = new Date(callTime.getTime() - 30 * 60000);
+                const canEarnBonus = now <= thirtyMinsBefore && job.status === 'ready';
+                
+                jobDiv.innerHTML = `
+                    <div class="job-time">${job.date} • ${job.time}</div>
+                    <div class="job-client">${job.client}</div>
+                    <div class="job-details">
+                        📍 ${job.location}<br>
+                        📦 Equipment: ${job.equipment.join(', ') || 'None'}<br>
+                        🎯 Status: ${job.status}
+                    </div>
+                    ${canEarnBonus ? `
+                        <div class="early-pickup-bonus">
+                            ⚡ EARLY PICKUP BONUS: +100 XP if you get your gear 30+ mins early!
+                        </div>
+                        <button class="mobile-btn btn-success" onclick="startEarlyPickup('${job.id}')" style="width: 100%; margin-top: 10px;">
+                            🎬 Start Early Pickup (+100 XP)
+                        </button>
+                    ` : ''}
+                `;
+                container.appendChild(jobDiv);
+            });
+        }
+
+        // Update My Profile
+        function updateMyProfile() {
+            const container = document.getElementById('myProfileInfo');
+            container.innerHTML = `
+                <div style="background: white; padding: 20px; border-radius: 15px;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 4em; margin-bottom: 10px;">${currentUser.avatar}</div>
+                        <h3>${currentUser.name}</h3>
+                        <p style="color: #666;">${currentUser.role}</p>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #667eea;">${currentUser.xp.toLocaleString()}</div>
+                            <div style="font-size: 0.9em; color: #666;">Experience Points</div>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #667eea;">Level ${currentUser.level}</div>
+                            <div style="font-size: 0.9em; color: #666;">Current Level</div>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #667eea;">${currentUser.equipment.length}</div>
+                            <div style="font-size: 0.9em; color: #666;">Equipment Assigned</div>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #667eea;">${currentUser.jobs.length}</div>
+                            <div style="font-size: 0.9em; color: #666;">Active Jobs</div>
+                        </div>
+                    </div>
+                    
+                    <h4 style="margin: 20px 0 10px 0;">🏆 Recent Achievements</h4>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px;">
+                        ${currentUser.xp >= 1000 ? '<p style="margin: 5px 0; color: #8B4513; font-weight: bold;">☕ Coffee Certificate Earned! (1000 XP)</p>' : ''}
+                        <p style="margin: 5px 0;">✅ On-Time Delivery Master</p>
+                        <p style="margin: 5px 0;">⚡ Speed Scanner (+25 XP)</p>
+                        <p style="margin: 5px 0;">📦 Equipment Expert</p>
+                        ${currentUser.xp < 1000 ? `<p style="margin: 10px 0; color: #8B4513; font-weight: bold;">☕ ${1000 - currentUser.xp} XP until Coffee Reward!</p>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // QR Code Processing (Personal Equipment Only)
+        function processMyQRScan() {
             const qrData = document.getElementById('qrInput').value.trim();
             if (!qrData) {
                 alert('📱 Please enter QR code data');
                 return;
             }
 
-            const asset = mobileApp.assets.find(a => a.id === qrData);
-            if (!asset) {
-                alert('❌ Equipment not found');
+            // Check if this equipment belongs to the current user
+            const myEquipment = currentUser.equipment.find(e => e.id === qrData);
+            if (!myEquipment) {
+                alert('❌ This equipment is not assigned to you');
                 return;
             }
 
-            const action = asset.status === 'available' ? 'check-out' : 'check-in';
-            const employee = action === 'check-out' ? prompt('👤 Employee name:') : null;
-            
-            if (action === 'check-out' && !employee) return;
-
-            if (action === 'check-out') {
-                asset.status = 'checked-out';
-                asset.assignedTo = employee;
+            // Update equipment status
+            if (myEquipment.status === 'available') {
+                myEquipment.status = 'checked-out';
+                myEquipment.location = `With ${currentUser.name}`;
             } else {
-                asset.status = 'available';
-                asset.assignedTo = '';
+                myEquipment.status = 'available';
+                myEquipment.location = 'Main Storage';
             }
 
+            // Show result
             const results = document.getElementById('qrResults');
             results.innerHTML = `
                 <div class="activity-item">
                     <div class="activity-time">${new Date().toLocaleTimeString()}</div>
                     <div class="activity-text">
-                        ✅ ${asset.name} ${action === 'check-out' ? 'checked out to ' + employee : 'checked in'}
+                        ✅ ${myEquipment.name} ${myEquipment.status === 'checked-out' ? 'checked out' : 'returned'}
                     </div>
                 </div>
             `;
@@ -762,113 +1040,100 @@
             document.getElementById('qrInput').value = '';
             gainXP(30);
             showAchievement('📱 QR Scan Complete! +30 XP');
-            updateStats();
+            updateUserInterface();
         }
 
-        // RFID Functions
-        function simulateRFIDScan() {
-            const randomAsset = mobileApp.assets[Math.floor(Math.random() * mobileApp.assets.length)];
-            const locations = ['Main Storage', 'Prep Area', 'Loading Dock', 'Studio A'];
-            const newLocation = locations[Math.floor(Math.random() * locations.length)];
+        // Equipment Functions
+        function updateEquipmentStatus(equipmentId) {
+            const equipment = currentUser.equipment.find(e => e.id === equipmentId);
+            const newLocation = prompt('📍 Update location:', equipment.location);
             
-            randomAsset.location = newLocation;
-            
-            const logContainer = document.getElementById('rfidLog');
-            const entry = document.createElement('div');
-            entry.className = 'activity-item';
-            entry.innerHTML = `
-                <div class="activity-time">${new Date().toLocaleTimeString()}</div>
-                <div class="activity-text">
-                    📡 Detected: ${randomAsset.name} in ${newLocation}
-                </div>
-            `;
-            logContainer.insertBefore(entry, logContainer.firstChild);
-            
-            // Keep only last 5 entries
-            while (logContainer.children.length > 5) {
-                logContainer.removeChild(logContainer.lastChild);
+            if (newLocation) {
+                equipment.location = newLocation;
+                updateMyEquipment();
+                gainXP(10);
+                showAchievement('📍 Location Updated! +10 XP');
             }
-            
-            document.getElementById('rfidStatusText').innerHTML = `Found: ${randomAsset.name}<br>Location: ${newLocation}`;
-            
-            gainXP(10);
-            showAchievement('📡 RFID Detection! +10 XP');
         }
 
-        // Leaderboard
-        function updateLeaderboard() {
-            const employees = [
-                { name: 'Sarah Johnson', xp: 8750, rentals: 47, rank: 1 },
-                { name: 'Alex Rivera', xp: 6500, rentals: 35, rank: 2 },
-                { name: 'Mike Chen', xp: 5200, rentals: 28, rank: 3 },
-                { name: 'Emma Davis', xp: 4800, rentals: 31, rank: 4 }
-            ];
-
-            const container = document.getElementById('leaderboardList');
-            container.innerHTML = '';
-            
-            employees.forEach(employee => {
-                const item = document.createElement('div');
-                item.className = 'leaderboard-item';
-                item.innerHTML = `
-                    <div class="leader-rank rank-${employee.rank}">${employee.rank}</div>
-                    <div class="leader-info">
-                        <div class="leader-name">${employee.name}</div>
-                        <div class="leader-stats">${employee.xp.toLocaleString()} XP • ${employee.rentals} rentals</div>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
+        function showEquipmentQR(equipmentId) {
+            const equipment = currentUser.equipment.find(e => e.id === equipmentId);
+            alert(`📱 QR Code: ${equipment.id}\n\nEquipment: ${equipment.name}\nStatus: ${equipment.status}\n\nUse this code in the QR Scanner tab`);
         }
 
-        // Schedule
-        function updateSchedule() {
-            const jobs = [
-                { time: '9:00 AM', client: 'NBC News', location: 'NBC Studios', equipment: 2, status: 'ready' },
-                { time: '2:00 PM', client: 'Corporate Event', location: 'Convention Center', equipment: 3, status: 'preparing' },
-                { time: '6:00 PM', client: 'Live Stream', location: 'Studio B', equipment: 1, status: 'confirmed' }
-            ];
+        // Manager Functions
+        function toggleManagerView() {
+            // This would switch between seeing all equipment vs just personal
+            // For now, just show a message
+            alert('👑 Manager view toggle - would show all company equipment and jobs');
+        }
 
-            const todaysContainer = document.getElementById('todaysJobs');
-            const upcomingContainer = document.getElementById('upcomingJobs');
-            
-            todaysContainer.innerHTML = '';
-            upcomingContainer.innerHTML = '';
-            
-            jobs.slice(0, 2).forEach(job => {
-                const jobDiv = document.createElement('div');
-                jobDiv.className = 'schedule-item';
-                jobDiv.innerHTML = `
-                    <div class="schedule-time">${job.time}</div>
-                    <div class="schedule-client">${job.client}</div>
-                    <div class="schedule-details">📍 ${job.location} • 📦 ${job.equipment} items • Status: ${job.status}</div>
-                `;
-                todaysContainer.appendChild(jobDiv);
+        function getAllEquipment() {
+            // Combine all employee equipment for manager view
+            let allEquipment = [];
+            Object.values(employeeData).forEach(employee => {
+                allEquipment = allEquipment.concat(employee.equipment);
             });
-            
-            // Upcoming jobs
-            const upcoming = [
-                { date: 'Tomorrow', client: 'ABC Morning Show', time: '6:00 AM' },
-                { date: 'Dec 30', client: 'New Year Special', time: '10:00 PM' }
-            ];
-            
-            upcoming.forEach(job => {
-                const jobDiv = document.createElement('div');
-                jobDiv.className = 'schedule-item';
-                jobDiv.innerHTML = `
-                    <div class="schedule-time">${job.date}</div>
-                    <div class="schedule-client">${job.client}</div>
-                    <div class="schedule-details">🕐 ${job.time}</div>
-                `;
-                upcomingContainer.appendChild(jobDiv);
+            return allEquipment;
+        }
+
+        function getAllJobs() {
+            // Combine all employee jobs for manager view
+            let allJobs = [];
+            Object.values(employeeData).forEach(employee => {
+                allJobs = allJobs.concat(employee.jobs);
             });
+            return allJobs;
         }
 
         // Gamification Functions
         function gainXP(amount) {
-            mobileApp.currentUser.xp += amount;
-            mobileApp.currentUser.weeklyXP += amount;
-            updateStats();
+            const oldXP = currentUser.xp;
+            currentUser.xp += amount;
+            
+            // Check for coffee certificate reward at 1000 XP
+            if (oldXP < 1000 && currentUser.xp >= 1000) {
+                showCoffeeCertificateReward();
+            }
+            
+            // Check for level up (every 500 XP)
+            const oldLevel = Math.floor(oldXP / 500) + 1;
+            const newLevel = Math.floor(currentUser.xp / 500) + 1;
+            
+            if (newLevel > oldLevel) {
+                currentUser.level = newLevel;
+                showAchievement(`🎉 LEVEL UP! Welcome to Level ${newLevel}! Keep earning XP!`, 200);
+            }
+            
+            updateUserInterface();
+        }
+
+        function showCoffeeCertificateReward() {
+            // Show special coffee certificate popup
+            const popup = document.getElementById('achievementPopup');
+            popup.innerHTML = `
+                <div style="font-size: 1.2em; margin-bottom: 10px;">☕ COFFEE REWARD UNLOCKED! ☕</div>
+                <div style="margin-bottom: 10px;">You've earned 1000 XP!</div>
+                <div style="font-size: 0.9em;">🎁 Claim your FREE coffee gift certificate from management!</div>
+            `;
+            popup.style.background = 'linear-gradient(135deg, #8B4513, #D2691E)';
+            popup.classList.add('show');
+            
+            // Add vibration pattern for special reward
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200, 100, 400]);
+            }
+            
+            // Show notification to managers
+            setTimeout(() => {
+                showNotification(`☕ ${currentUser.name} earned a coffee gift certificate! (1000 XP milestone)`, 'urgent');
+            }, 1000);
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+                popup.style.background = 'linear-gradient(135deg, #ff6b6b, #feca57)';
+                popup.innerHTML = '🎉 Achievement Unlocked! +50 XP';
+            }, 6000);
         }
 
         function showAchievement(text) {
@@ -886,92 +1151,158 @@
             }, 3000);
         }
 
-        function updateStats() {
-            document.getElementById('userXP').textContent = mobileApp.currentUser.xp.toLocaleString();
-            
-            const available = mobileApp.assets.filter(a => a.status === 'available').length;
-            document.getElementById('availableCount').textContent = available;
-        }
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            // App starts with login screen
+            console.log('GethuGear Personal Dashboard Ready');
+        });
 
-        // Recent Activity
-        function updateRecentActivity() {
-            const activities = [
-                { time: '10:30 AM', text: '📤 Sarah checked out PrompterMax Pro for NBC' },
-                { time: '9:45 AM', text: '📡 RFID detected Sony FX6 in Prep Area' },
-                { time: '9:15 AM', text: '📅 New booking: Corporate Event Dec 30' },
-                { time: '8:30 AM', text: '📥 Mike returned Rode Wireless Pro' }
-            ];
-            
-            const container = document.getElementById('recentActivity');
+        // Manager Job Creation Functions
+        function populateEquipmentCheckboxes() {
+            const container = document.getElementById('equipmentCheckboxes');
             container.innerHTML = '';
             
-            activities.forEach(activity => {
-                const activityDiv = document.createElement('div');
-                activityDiv.className = 'activity-item';
-                activityDiv.innerHTML = `
-                    <div class="activity-time">${activity.time}</div>
-                    <div class="activity-text">${activity.text}</div>
+            allEquipment.forEach(equipment => {
+                const checkboxDiv = document.createElement('div');
+                checkboxDiv.style.cssText = 'margin: 5px 0; display: flex; align-items: center; gap: 10px;';
+                checkboxDiv.innerHTML = `
+                    <input type="checkbox" id="equip_${equipment.id}" value="${equipment.id}" style="width: 20px; height: 20px;">
+                    <label for="equip_${equipment.id}" style="flex: 1;">${equipment.name} (${equipment.category})</label>
                 `;
-                container.appendChild(activityDiv);
+                container.appendChild(checkboxDiv);
             });
         }
 
-        // QR Code Generation
-        function generateQRCodes() {
-            const results = document.getElementById('qrResults');
-            results.innerHTML = '<h3>🏷 Equipment QR Codes</h3>';
+        function createNewJob() {
+            const client = document.getElementById('jobClient').value;
+            const date = document.getElementById('jobDate').value;
+            const time = document.getElementById('jobTime').value;
+            const location = document.getElementById('jobLocation').value;
+            const operatorId = document.getElementById('jobOperator').value;
+            const instructions = document.getElementById('jobInstructions').value;
             
-            mobileApp.assets.forEach(asset => {
-                const qrDiv = document.createElement('div');
-                qrDiv.className = 'activity-item';
-                qrDiv.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <strong>${asset.name}</strong><br>
-                            <span style="font-size: 12px; color: #666;">QR: ${asset.id}</span>
-                        </div>
-                        <button class="mobile-btn btn-info" onclick="alert('QR Code: ${asset.id}\\nShow this to scanner')">
-                            📱 Show QR
-                        </button>
-                    </div>
-                `;
-                results.appendChild(qrDiv);
-            });
-            
-            gainXP(25);
-            showAchievement('🏷 QR Codes Generated! +25 XP');
-        }
-
-        function showAssetQR(assetId) {
-            const asset = mobileApp.assets.find(a => a.id === assetId);
-            alert(`📱 QR Code for ${asset.name}:\n\n${assetId}\n\nShow this code to the scanner or type it manually.`);
-        }
-
-        // Initialize Mobile App
-        document.addEventListener('DOMContentLoaded', function() {
-            updateStats();
-            updateAssetList();
-            updateRecentActivity();
-            updateLeaderboard();
-            updateSchedule();
-            
-            // Auto RFID simulation every 15 seconds
-            setInterval(() => {
-                if (mobileApp.currentTab === 'rfid' && Math.random() < 0.4) {
-                    simulateRFIDScan();
-                }
-            }, 15000);
-        });
-
-        // Touch-friendly interactions
-        document.addEventListener('touchstart', function() {}, { passive: true });
-        
-        // Prevent zoom on form inputs
-        document.addEventListener('touchstart', function(e) {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
-                e.target.style.fontSize = '16px';
+            if (!client || !date || !time || !location || !operatorId) {
+                alert('📝 Please fill in all required fields');
+                return;
             }
-        });
+            
+            // Get selected equipment
+            const selectedEquipment = [];
+            document.querySelectorAll('#equipmentCheckboxes input:checked').forEach(checkbox => {
+                const equipment = allEquipment.find(e => e.id === checkbox.value);
+                selectedEquipment.push(equipment.id);
+            });
+            
+            if (selectedEquipment.length === 0) {
+                alert('📦 Please select at least one piece of equipment');
+                return;
+            }
+            
+            // Create new job
+            const newJob = {
+                id: 'JOB_' + Date.now(),
+                client: client,
+                date: date,
+                time: time,
+                location: location,
+                equipment: selectedEquipment,
+                status: 'ready',
+                instructions: instructions,
+                createdBy: currentUser.name,
+                createdAt: new Date().toLocaleString()
+            };
+            
+            // Assign job to operator
+            if (employeeData[operatorId]) {
+                employeeData[operatorId].jobs.push(newJob);
+                
+                // Assign equipment to operator
+                selectedEquipment.forEach(equipId => {
+                    const equipmentItem = {
+                        id: equipId,
+                        name: allEquipment.find(e => e.id === equipId).name,
+                        status: 'assigned',
+                        location: 'Ready for Pickup',
+                        jobId: newJob.id
+                    };
+                    
+                    // Remove if already exists, then add
+                    employeeData[operatorId].equipment = employeeData[operatorId].equipment.filter(e => e.id !== equipId);
+                    employeeData[operatorId].equipment.push(equipmentItem);
+                });
+            }
+            
+            // Clear form
+            document.getElementById('jobClient').value = '';
+            document.getElementById('jobDate').value = '';
+            document.getElementById('jobTime').value = '';
+            document.getElementById('jobLocation').value = '';
+            document.getElementById('jobOperator').value = '';
+            document.getElementById('jobInstructions').value = '';
+            document.querySelectorAll('#equipmentCheckboxes input').forEach(cb => cb.checked = false);
+            
+            // Show success message
+            showNotification(`🎬 Job created for ${employeeData[operatorId].name}! They've been notified.`, 'success');
+            showAchievement('📅 Job Created Successfully! +25 XP');
+            gainXP(25);
+            
+            // Simulate notification to operator
+            setTimeout(() => {
+                showNotification(`📢 ${employeeData[operatorId].name} has been notified of their new job!`, 'info');
+            }, 2000);
+        }
+
+        // Early Pickup Bonus System
+        function startEarlyPickup(jobId) {
+            const job = currentUser.jobs.find(j => j.id === jobId);
+            if (!job) return;
+            
+            // Check if really early (30+ minutes before call time)
+            const callTime = new Date(`${job.date} ${job.time}`);
+            const now = new Date();
+            const thirtyMinsBefore = new Date(callTime.getTime() - 30 * 60000);
+            
+            if (now <= thirtyMinsBefore) {
+                // Award early pickup bonus
+                job.status = 'early-pickup';
+                gainXP(100);
+                showAchievement('⚡ EARLY PICKUP BONUS! You earned +100 XP for being 30+ minutes early!');
+                showNotification('🎉 Early Bird! You got your gear early and earned bonus XP!', 'success');
+                
+                // Mark equipment as checked out
+                job.equipment.forEach(equipId => {
+                    const equipment = currentUser.equipment.find(e => e.id === equipId);
+                    if (equipment) {
+                        equipment.status = 'checked-out';
+                        equipment.location = `With ${currentUser.name}`;
+                    }
+                });
+                
+                updateMyJobs();
+                updateMyEquipment();
+                updateUserInterface();
+            } else {
+                alert('⏰ Early pickup bonus only available 30+ minutes before call time!');
+            }
+        }
+
+        // Notification System
+        function showNotification(message, type = 'info') {
+            const popup = document.getElementById('notificationPopup');
+            popup.textContent = message;
+            popup.className = `notification ${type}`;
+            popup.classList.add('show');
+            
+            // Add vibration on mobile
+            if (navigator.vibrate) {
+                navigator.vibrate([50, 100, 50]);
+            }
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 4000);
+        }
     </script>
 </body>
 </html>
+                
